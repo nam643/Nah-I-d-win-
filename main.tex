@@ -1,0 +1,558 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Packages ----------
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}                 % Times-style font, as in the original
+\usepackage[a4paper,margin=1.8cm,bottom=2.2cm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{array,longtable,multirow}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{pgfgantt}
+\usepackage{xurl}                     % lets long URLs break anywhere
+\urlstyle{same}
+\usepackage[colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+
+% ---------- Colours ----------
+\definecolor{utsblue}{HTML}{1F6FB2}
+\definecolor{headgray}{HTML}{EFEFEF}
+
+% ---------- Page style ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[R]{\fontfamily{phv}\selectfont\scriptsize UTS CRICOS PROVIDER CODE 00099F}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist[itemize]{label=\textbullet, leftmargin=2em, topsep=2pt, itemsep=0pt}
+
+% ---------- Section headings ----------
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{0pt}{3ex plus 1ex}{1.2ex}{\LARGE\bfseries}}
+\renewcommand\subsection{\@startsection{subsection}{2}{0pt}{2ex plus .5ex}{.8ex}{\Large\bfseries}}
+\makeatother
+
+% ---------- Helpers ----------
+% Blue italic assignment instructions (delete these once you've written your answers)
+\newcommand{\instr}[1]{{\color{utsblue}\itshape #1\par}}
+\newcommand{\bluehead}[1]{\textcolor{utsblue}{\textbf{#1}}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}}
+
+% Inner step table used inside each test scenario.
+% Rows are written as:   1 & Action text \\ \hline
+\newenvironment{steps}{%
+  \renewcommand{\arraystretch}{1.25}%
+  \begin{tabular}{@{}|L{1.3cm}|L{11.2cm}|@{}}
+  \hline
+  \cellcolor{headgray}\textit{\textbf{Step \#}} & \cellcolor{headgray}\textit{\textbf{Test Action}} \\ \hline
+}{%
+  \end{tabular}%
+}
+
+% Code listings for any test source code
+\lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
+        columns=fullflexible, numbers=left, numberstyle=\tiny}
+
+\begin{document}
+
+\begin{center}
+  {\huge\bfseries System Test Report}
+\end{center}
+
+%====================================================================
+\section*{1. Overview}
+%====================================================================
+\instr{Explore the website under test (\url{https://ecommerce-playground.lambdatest.io/index.php?route=common/home}) and, on that basis, provide a summary of the website, including its high-level business goals, user roles, and features.}
+
+The website LambdaTest Playground is an online e-commerce platform specializing in consumer electronics and computer hardware. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and registered users can purchase them through a multi-step checkout process. Other features include wishlisting items, subscribing to newsletters, managing and editing user profiles, \ldots
+
+Business goals:
+\begin{itemize}
+  \item Drive sales and maximise revenue by offering straightforward and easy to explore products, deals and seamless checkout
+  \item Retain customers by encouraging repeat purchases through customer accounts, wishlists, reward points and newsletter subscriptions
+  \item Optimise user experience with a responsive, fast and intuitive interface
+\end{itemize}
+
+User roles:
+\begin{itemize}
+  \item Guest (Unregistered Customer): browse catalogues, search keywords, add products to cart, create account, submit a review
+  \item Registered Customer: retain all guest capabilities + manage personal info, save items to wishlist, view past orders and track delivery status
+  \item Admin: manage inventory, product listings; monitor and process upcoming orders; moderate customer reviews; manage user accounts
+\end{itemize}
+
+%====================================================================
+\section*{2. System Functions}
+%====================================================================
+\instr{List the functions that you decide to test, together with their descriptions and web locations (URLs). The table below provides examples for reference.}
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|M{2.6cm}|M{3.4cm}|L{10.0cm}|}
+\hline
+\textbf{Function ID} & \textbf{Function Name} & \textbf{Description and location} \\ \hline
+\endhead
+F1 & User Login &
+A returning user can log in to the website using the registered email address and password via the login page.\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=account/login} \\ \hline
+F2 & User Registration &
+A user can register an account using a new email address that has not previously been registered on the website, together with personal details (full name and telephone number) and a password.\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=account/register} \\ \hline
+F3 & Comparing Products &
+A user can select multiple products from the catalogue to add to a comparison list, generating a side-by-side table that evaluates their features, specifications, prices, and availability.\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/compare} \\ \hline
+F4 & Adding a Product to Shopping Cart &
+A user can select a desired quantity and add an in-stock product to the shopping cart, updating the cart total and item count\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&manufacturer_id=8&product_id=32} \\ \hline
+F5 & Submitting a Product Review &
+A user can submit feedback on a product page by entering their name, a text review (minimum character requirement), and a 1--5 star rating\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&manufacturer_id=8&product_id=32} \\ \hline
+F6 & Searching for a Product &
+A user can enter search terms into the top navigation search bar to query the product catalogue and view matched results.\newline
+\url{https://ecommerce-playground.lambdatest.io/index.php?route=common/home} \\ \hline
+\end{longtable}}
+
+\vspace{-1ex}
+\instr{Explain the dependencies between the functions that you decide to test. You may use a graph to illustrate the dependency relationships between the functions under test.}
+
+\subsection*{Dependencies}
+\begin{itemize}
+  \item F1 depends on F2: A user profile must exist before testing valid authentication credentials on the login page.
+  \item F4 depends on F3: A user must navigate to an item's product details page to specify quantities and trigger the ``Add to Cart'' action.
+  \item F5 depends on F3: The review submission form is within the individual product page.
+\end{itemize}
+
+%====================================================================
+\section*{3. Test Team}
+%====================================================================
+\instr{Provide the full names, email addresses, subject and tutorial codes of all your team members.}
+\instr{Describe the roles and responsibilities of your group members. Make sure that all functions listed in Section 2 are covered.}
+\instr{The table below shows an example for your reference.}
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|M{1.9cm}|M{4.1cm}|M{2.9cm}|M{6.6cm}|}
+\hline
+\bluehead{Student ID} & \bluehead{Member Name} & \bluehead{Role} & \bluehead{Responsibilities (in terms of Function IDs/Names)} \\ \hline
+\endhead
+ & & &
+\begin{minipage}[t]{\linewidth}\begin{itemize}[nosep,leftmargin=1.2em]
+  \item F1 User Login
+  \item F2 XXXX
+  \item F6 XXXXXXX
+\end{itemize}\vspace{2pt}\end{minipage} \\ \hline
+26037299 & Nguyen Tran (\href{mailto:nguyenphuongduy.tran@student.uts.edu.au}{\nolinkurl{nguyenphuongduy.tran@student.uts.edu.au}}) & &
+\begin{minipage}[t]{\linewidth}\begin{itemize}[nosep,leftmargin=1.2em]
+  \item sth
+  \item sth
+  \item sth
+\end{itemize}\vspace{2pt}\end{minipage} \\ \hline
+\end{longtable}}
+
+\vspace{-1ex}
+\instr{Indicate whether your group has already delivered (or wishes to deliver) an in-class presentation or submit a recorded presentation.}
+{\color{utsblue}\itshape
+\begin{itemize}[topsep=0pt]
+  \item For an in-class presentation, please indicate which tutorial your group attended (or wishes to attend).
+  \item For a recorded presentation, please provide a web link through which your marker can access the recording.
+\end{itemize}}
+
+We have not delivered an in class presentation.
+
+%====================================================================
+\section*{4. Task Schedule}
+%====================================================================
+\instr{Describe the order in which you will test the functions selected in Section 2, either for the whole group or for each member separately. Each function to be tested is considered a \textbf{testing task}. The schedule should be presented using a Gantt chart.}
+\instr{Does the order of your testing tasks support parallel testing among team members? If so, explain how. If not, explain how you could improve the schedule to allow members to conduct their testing tasks in parallel.}
+\instr{Make sure that you test a function before proceeding to test any function that depends on it. For example, you need to test the ``User Registration'' function first and make sure that it is working before you can test the ``User Login'' function.}
+\instr{Make sure to cover all team members (see Section 3) and all functions (see Section 2).}
+
+% ---- Gantt chart starter (uncomment and edit days/tasks/names) ----
+% \begin{center}
+% \begin{ganttchart}[hgrid, vgrid, x unit=1cm, y unit chart=0.6cm,
+%                    bar/.append style={fill=utsblue!60}]{1}{6}
+%   \gantttitle{Testing days}{6} \\
+%   \gantttitlelist{1,...,6}{1} \\
+%   \ganttbar{F2 User Registration (Member A)}{1}{1} \\
+%   \ganttbar{F1 User Login (Member A)}{2}{2} \\
+%   \ganttbar{F3 Comparing Products (Member B)}{1}{1} \\
+%   \ganttbar{F4 Add to Cart (Member B)}{2}{2} \\
+%   \ganttbar{F5 Product Review (Member C)}{2}{2} \\
+%   \ganttbar{F6 Product Search (Member C)}{1}{1}
+% \end{ganttchart}
+% \end{center}
+
+%====================================================================
+\section*{5. Test Environments and Tools}
+%====================================================================
+\instr{Describe your computing platforms (Arm, x86), operating systems (macOS, Linux, Windows), and how you set up your testing environments (programming languages, test automation tools, libraries, code editors, and IDEs), step by step.}
+\instr{If your group members use different environment configurations or tools, describe each member's environment and tools separately.}
+
+%====================================================================
+\section*{6. Test Cases}
+%====================================================================
+\instr{Each group member should complete three test cases -- each corresponding to a function to be tested (in Section 2).}
+\instr{The table below shows a sample template for a test case. You need one table for each test case.}
+\instr{If your tests have any source code, please provide the source code; if you used any prompts, describe them as well.}
+\instr{Examples of test scenarios and steps can be found on page 20 or page 25 of the Tutorial 9 slides, or in feature files (if you use the Gherkin language; see, for example, page 10 of the Tutorial 10 slides).}
+
+% Source code example (uncomment and paste your code):
+% \begin{lstlisting}[language=Python, caption={Selenium test for F1}]
+% # your code here
+% \end{lstlisting}
+
+% ---------------- Test case 1 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+% ---------------- Test case 2 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+% ---------------- Test case 3 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+% ---------------- Test case 4 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+% ---------------- Test case 5 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+% ---------------- Test case 6 ----------------
+{\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|M{2.6cm}|p{13.6cm}|}
+\hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Scenario 1} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 2} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Scenario 3} &
+\vspace{1ex}
+\begin{steps}
+  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
+  2 & \\ \hline
+  3 & \\ \hline
+  4 & \\ \hline
+  5 & \\ \hline
+  6 & \\ \hline
+  7 & \\ \hline
+  8 & \\ \hline
+  9 & \\ \hline
+    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+\end{steps}
+\vspace{1ex} \\ \hline
+\bluehead{Test Results} &
+\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+% \includegraphics[width=\linewidth]{screenshot.png}
+\vspace{1.5ex} \\ \hline
+\end{longtable}}
+
+%====================================================================
+\section*{7. Analysis and Reflections}
+%====================================================================
+\instr{Provide basic statistics for the tests conducted by your group, including how many passed, failed, or resulted in errors. List any defects that you identified on the website.}
+\instr{Reflect on the tests you have conducted and identify the successes and failures in your group's efforts. What lessons did you learn? How would you approach the system testing tasks differently if given a second chance?}
+
+\end{document}
