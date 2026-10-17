@@ -128,6 +128,7 @@ User roles:
   \item Admin: manage inventory, product listings; monitor and process upcoming orders; moderate customer reviews; manage user accounts. The admin back office is not accessible to testers, so admin-side behaviour (such as review approval) is out of scope.
 \end{itemize}
 
+
 %====================================================================
 \section*{2. System Functions}
 %====================================================================
@@ -148,14 +149,15 @@ F3 & Comparing Products &
 A user can select multiple products from the catalogue to add to a comparison list, generating a side-by-side table that evaluates their features, specifications, prices, and availability.\newline
 \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/compare} \\ \hline
 F4 & Adding a Product to Shopping Cart &
-A user can select a desired quantity and add an in-stock product to the shopping cart, updating the cart total and item count\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&manufacturer_id=8&product_id=32} \\ \hline
+A user can select a desired quantity and add an in-stock product to the shopping cart, updating the cart total and item count.\newline
+Product page (e.g.\ iPod Touch): \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=32}\newline
+Cart: \url{https://ecommerce-playground.lambdatest.io/index.php?route=checkout/cart} \\ \hline
 F5 & Submitting a Product Review &
-A user can submit feedback on a product page by entering their name, a text review (minimum character requirement), and a 1--5 star rating\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&manufacturer_id=8&product_id=32} \\ \hline
+A user can submit feedback on a product page by entering their name, a text review (minimum character requirement), and a 1--5 star rating; the review is held for administrator approval.\newline
+Review form on the product page, e.g.\ \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=32} \\ \hline
 F6 & Searching for a Product &
 A user can enter search terms into the top navigation search bar to query the product catalogue and view matched results.\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=common/home} \\ \hline
+Search bar on every page; results page: \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/search&search=iPod} \\ \hline
 \end{longtable}}
 
 \vspace{-1ex}
@@ -164,9 +166,32 @@ A user can enter search terms into the top navigation search bar to query the pr
 \subsection*{Dependencies}
 \begin{itemize}
   \item F1 depends on F2: A user profile must exist before testing valid authentication credentials on the login page.
-  \item F4 depends on F3: A user must navigate to an item's product details page to specify quantities and trigger the ``Add to Cart'' action.
-  \item F5 depends on F3: The review submission form is within the individual product page.
+  \item F3, F4 and F5 depend on F6 in our test flow: these pages can also be opened directly by URL, so this is not a hard system dependency, but our scenarios reach each product through search, as a real shopper would, so F6 is tested first.
+  \item F5 may depend on F1: if the review form asks guests to log in \VERIFY{guest reviews}, the reviewer must log in first.
+  \item F2 and F6 have no dependencies and can be tested at any time.
 \end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[
+  fn/.style={draw, rounded corners=3pt, minimum width=2.7cm, minimum height=0.8cm, align=center, font=\small},
+  hard/.style={-{Stealth[length=2.2mm]}, thick},
+  soft/.style={-{Stealth[length=2.2mm]}, thick, dashed, gray!70!black},
+  lab/.style={font=\scriptsize, fill=white, inner sep=1pt}]
+  \node[fn] (F2) at (0,0)      {F2 Registration};
+  \node[fn] (F1) at (3.6,0)    {F1 Login};
+  \node[fn] (F6) at (0,-2.7)   {F6 Search};
+  \node[fn] (F5) at (3.6,-1.5) {F5 Review};
+  \node[fn] (F3) at (3.6,-2.7) {F3 Compare};
+  \node[fn] (F4) at (3.6,-3.9) {F4 Add to cart};
+  \draw[hard] (F2) -- (F1);
+  \draw[soft] (F6.east) -- (F3.west);
+  \draw[soft] (F6.east) -- (F5.west);
+  \draw[soft] (F6.east) -- (F4.west);
+  \draw[soft] (F1) -- node[lab, right]{if login required} (F5);
+\end{tikzpicture}
+
+{\small Solid arrows: hard dependencies. Dashed arrows: test-flow or conditional dependencies.}
+\end{center}
 
 %====================================================================
 \section*{3. Test Team}
