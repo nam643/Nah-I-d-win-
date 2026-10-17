@@ -11,13 +11,21 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{pgfgantt}
+\usetikzlibrary{arrows.meta}          % arrow tips for the dependency diagram
+\usepackage{amsmath,amssymb}          % \text in the cart formula, \checkmark in the coverage matrix
 \usepackage{xurl}                     % lets long URLs break anywhere
 \urlstyle{same}
 \usepackage[colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
 
 % ---------- Colours ----------
-\definecolor{utsblue}{HTML}{1F6FB2}
-\definecolor{headgray}{HTML}{EFEFEF}
+\definecolor{utsblue}{RGB}{52,120,190}
+\definecolor{instr}{RGB}{52,120,190}
+\definecolor{headgray}{gray}{0.92}
+\definecolor{memA}{RGB}{91,155,213}
+\definecolor{memB}{RGB}{112,173,71}
+\definecolor{memC}{RGB}{237,125,49}
+
+
 
 % ---------- Page style ----------
 \pagestyle{fancy}
@@ -52,6 +60,42 @@
   \end{tabular}%
 }
 
+% ---------- Added helpers ----------
+% Placeholders: search the file for \FILL and \VERIFY and replace every one before submitting
+\newcommand{\FILL}[1]{\textcolor{red}{\textbf{[FILL: #1]}}}
+\newcommand{\VERIFY}[1]{\textcolor{orange!85!black}{\textbf{[VERIFY: #1]}}}
+\newcommand{\ev}[1]{\texttt{\detokenize{#1}.png}}   % evidence screenshot file name
+
+% One test scenario row of a test case table:
+%   #1 number, #2 short name, #3 step rows, #4 expected result
+\newcommand{\scenario}[4]{%
+  \bluehead{Test Scenario #1}\newline{\small #2} &
+  \vspace{1ex}
+  \begin{steps}
+  #3
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} #4} \\ \hline
+  \end{steps}
+  \vspace{1ex} \\ \hline
+}
+
+% Test Results row: one line per check -> Scenario & Input & Expected & Actual & Result & Evidence
+\newcommand{\results}[1]{%
+  \bluehead{Test Results} &
+  \vspace{1ex}{\footnotesize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.2}%
+  \begin{tabular}{@{}|L{0.85cm}|L{2.4cm}|L{2.6cm}|L{2.6cm}|L{1.15cm}|L{2.0cm}|@{}}
+  \hline
+  \cellcolor{headgray}\textbf{Scen.} & \cellcolor{headgray}\textbf{Input} & \cellcolor{headgray}\textbf{Expected} & \cellcolor{headgray}\textbf{Actual} & \cellcolor{headgray}\textbf{Result} & \cellcolor{headgray}\textbf{Evidence} \\ \hline
+  #1
+  \end{tabular}}\vspace{1ex} \\ \hline
+}
+
+% Screenshot placeholder (replace with \includegraphics once you have the image)
+\newcommand{\shotbox}[1]{\fbox{\parbox[c][1.4cm][c]{12.8cm}{\centering\small\textcolor{red}{Insert screenshot: \texttt{\detokenize{#1}}}}}}
+
+% Source code from the test suite. If the file is not uploaded to Overleaf,
+% a red note is printed instead of stopping the build.
+\newcommand{\codefile}[1]{\IfFileExists{#1}{\lstinputlisting[language=Python]{#1}}{\par\FILL{upload \texttt{\detokenize{#1}} to Overleaf (same folder structure), or delete this line}\par}}
+
 % Code listings for any test source code
 \lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
         columns=fullflexible, numbers=left, numberstyle=\tiny}
@@ -67,20 +111,21 @@
 %====================================================================
 \instr{Explore the website under test (\url{https://ecommerce-playground.lambdatest.io/index.php?route=common/home}) and, on that basis, provide a summary of the website, including its high-level business goals, user roles, and features.}
 
-The website LambdaTest Playground is an online e-commerce platform specializing in consumer electronics and computer hardware. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and registered users can purchase them through a multi-step checkout process. Other features include wishlisting items, subscribing to newsletters, managing and editing user profiles, \ldots
+The website LambdaTest Playground is an online e-commerce platform specializing in consumer electronics and computer hardware, built on OpenCart and published by LambdaTest as a practice target for web test automation. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and purchase them through a multi-step checkout process. Other features include comparing products side by side, wishlisting items, writing product reviews, subscribing to newsletters, managing and editing user profiles and address books, viewing order history and reward points, tracking orders, and contacting the store through a Contact Us form.
 
 Business goals:
 \begin{itemize}
   \item Drive sales and maximise revenue by offering straightforward and easy to explore products, deals and seamless checkout
   \item Retain customers by encouraging repeat purchases through customer accounts, wishlists, reward points and newsletter subscriptions
+  \item Build buyer confidence through product reviews, side-by-side comparison and transparent pricing and stock information
   \item Optimise user experience with a responsive, fast and intuitive interface
 \end{itemize}
 
 User roles:
 \begin{itemize}
-  \item Guest (Unregistered Customer): browse catalogues, search keywords, add products to cart, create account, submit a review
+  \item Guest (Unregistered Customer): browse catalogues, search keywords, compare products, add products to cart, create account, submit a review
   \item Registered Customer: retain all guest capabilities + manage personal info, save items to wishlist, view past orders and track delivery status
-  \item Admin: manage inventory, product listings; monitor and process upcoming orders; moderate customer reviews; manage user accounts
+  \item Admin: manage inventory, product listings; monitor and process upcoming orders; moderate customer reviews; manage user accounts. The admin back office is not accessible to testers, so admin-side behaviour (such as review approval) is out of scope.
 \end{itemize}
 
 %====================================================================
