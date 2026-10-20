@@ -45,3 +45,7 @@
 *.sublime-project
 vscode/
 idea/
+
+# Venv files
+*.venv
+*.venv_win

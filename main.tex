@@ -132,7 +132,6 @@ User roles:
 %====================================================================
 \section*{2. System Functions}
 %====================================================================
-\instr{List the functions that you decide to test, together with their descriptions and web locations (URLs). The table below provides examples for reference.}
 
 {\renewcommand{\arraystretch}{1.3}
 \begin{longtable}{|M{2.6cm}|M{3.4cm}|L{10.0cm}|}
@@ -161,7 +160,6 @@ Search bar on every page; results page: \url{https://ecommerce-playground.lambda
 \end{longtable}}
 
 \vspace{-1ex}
-\instr{Explain the dependencies between the functions that you decide to test. You may use a graph to illustrate the dependency relationships between the functions under test.}
 
 \subsection*{Dependencies}
 \begin{itemize}
@@ -196,10 +194,6 @@ Search bar on every page; results page: \url{https://ecommerce-playground.lambda
 %====================================================================
 \section*{3. Test Team}
 %====================================================================
-\instr{Provide the full names, email addresses, subject and tutorial codes of all your team members.}
-\instr{Describe the roles and responsibilities of your group members. Make sure that all functions listed in Section 2 are covered.}
-\instr{The table below shows an example for your reference.}
-
 {\renewcommand{\arraystretch}{1.3}
 \begin{longtable}{|M{1.9cm}|M{4.1cm}|M{2.9cm}|M{6.6cm}|}
 \hline
@@ -207,15 +201,15 @@ Search bar on every page; results page: \url{https://ecommerce-playground.lambda
 \endhead
  & & &
 \begin{minipage}[t]{\linewidth}\begin{itemize}[nosep,leftmargin=1.2em]
-  \item F1 User Login
-  \item F2 XXXX
-  \item F6 XXXXXXX
+  \item F2 User Registration
+  \item F3 Comparing Products
+  \item F4 Adding a Product to Shopping Cart
 \end{itemize}\vspace{2pt}\end{minipage} \\ \hline
 26037299 & Nguyen Tran (\href{mailto:nguyenphuongduy.tran@student.uts.edu.au}{\nolinkurl{nguyenphuongduy.tran@student.uts.edu.au}}) & &
 \begin{minipage}[t]{\linewidth}\begin{itemize}[nosep,leftmargin=1.2em]
-  \item sth
-  \item sth
-  \item sth
+  \item F1 User Login
+  \item F5 Submitting a Product Reivew
+  \item F6 Searching for a Product
 \end{itemize}\vspace{2pt}\end{minipage} \\ \hline
 \end{longtable}}
 
@@ -275,56 +269,37 @@ We have not delivered an in class presentation.
 {\renewcommand{\arraystretch}{1.4}
 \begin{longtable}{|M{2.6cm}|p{13.6cm}|}
 \hline
-\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape Define a unique id for the test case (e.g., T001)} \\ \hline
-\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape Refer to the table in Section 2} \\ \hline
-\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
+\bluehead{Test Case ID} & \textcolor{utsblue}{\itshape T001} \\ \hline
+\bluehead{Function IDs/Names} & \textcolor{utsblue}{\itshape F1: User Login} \\ \hline
+\bluehead{Tester} & \textcolor{utsblue}{\itshape Nguyen Tran} \\ \hline
 \bluehead{Test Scenario 1} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to the login page \\ \hline
+  2 & Enter a registered email into "E-mail address" field (validemail@gmail.com in test) \\ \hline
+  3 & Enter corresponding password into "Password" field (correctpassword in test)\\ \hline
+  4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
 \bluehead{Test Scenario 2} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to the login page \\ \hline
+  2 & Leave "E-mail Address" field completely blank \\ \hline
+  3 & Leave "Password" field completely blank \\ \hline
+  4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
 \bluehead{Test Scenario 3} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to the login page \\ \hline
+  2 & Enter an unregistered email into "E-mail address" field (notvalidemail@gmail.com in test) \\ \hline
+  3 & Enter any password into "Password" field (incorrectpassword in test)\\ \hline
+  4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} &
-\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
+\bluehead{Test Results} & Tests were executed successfully
 % \includegraphics[width=\linewidth]{screenshot.png}
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
