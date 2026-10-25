@@ -8,11 +8,16 @@ import time
 driver = webdriver.Edge()
 
 # Go to main page (search bar is on top)
-driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=common/home")
+driver.get("https://opencart.abstracta.us/index.php?route=common/home")
 
 # Immediately search without any input in search bar
 search_bar = driver.find_element(By.NAME, "search")
 search_bar.send_keys(Keys.ENTER)
+
+products = driver.find_elements(By.CSS_SELECTOR, ".product-layout")
+assert len(products) == 0, f"Test Failed: Expected no products to be displayed for an empty search, but found {len(products)}."
+
+print("Test Passed: Empty search returned nothing.")
 
 time.sleep(5)
 driver.quit()

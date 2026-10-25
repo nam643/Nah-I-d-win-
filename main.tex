@@ -15,7 +15,8 @@
 \usepackage{amsmath,amssymb}          % \text in the cart formula, \checkmark in the coverage matrix
 \usepackage{xurl}                     % lets long URLs break anywhere
 \urlstyle{same}
-\usepackage[colorlinks=true,urlcolor=black,linkcolor=black]{hyperref}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=black]{hyperref}
 
 % ---------- Colours ----------
 \definecolor{utsblue}{RGB}{52,120,190}
@@ -25,7 +26,9 @@
 \definecolor{memB}{RGB}{112,173,71}
 \definecolor{memC}{RGB}{237,125,49}
 
-
+\hypersetup{
+  urlcolor=utsblue
+}
 
 % ---------- Page style ----------
 \pagestyle{fancy}
@@ -109,9 +112,7 @@
 %====================================================================
 \section*{1. Overview}
 %====================================================================
-\instr{Explore the website under test (\url{https://ecommerce-playground.lambdatest.io/index.php?route=common/home}) and, on that basis, provide a summary of the website, including its high-level business goals, user roles, and features.}
-
-The website LambdaTest Playground is an online e-commerce platform specializing in consumer electronics and computer hardware, built on OpenCart and published by LambdaTest as a practice target for web test automation. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and purchase them through a multi-step checkout process. Other features include comparing products side by side, wishlisting items, writing product reviews, subscribing to newsletters, managing and editing user profiles and address books, viewing order history and reward points, tracking orders, and contacting the store through a Contact Us form.
+The website \href{https://opencart.abstracta.us/index.php?route=common/home}{Abstracta} is an online e-commerce platform specializing in consumer electronics and computer hardware, built on OpenCart and published by LambdaTest as a practice target for web test automation. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and purchase them through a multi-step checkout process. Other features include comparing products side by side, wishlisting items, writing product reviews, subscribing to newsletters, managing and editing user profiles and address books, viewing order history and reward points, tracking orders, and contacting the store through a Contact Us form.
 
 Business goals:
 \begin{itemize}
@@ -140,23 +141,23 @@ User roles:
 \endhead
 F1 & User Login &
 A returning user can log in to the website using the registered email address and password via the login page.\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=account/login} \\ \hline
+\url{https://opencart.abstracta.us/index.php?route=account/login} \\ \hline
 F2 & User Registration &
 A user can register an account using a new email address that has not previously been registered on the website, together with personal details (full name and telephone number) and a password.\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=account/register} \\ \hline
+\url{https://opencart.abstracta.us/index.php?route=account/register} \\ \hline
 F3 & Comparing Products &
 A user can select multiple products from the catalogue to add to a comparison list, generating a side-by-side table that evaluates their features, specifications, prices, and availability.\newline
-\url{https://ecommerce-playground.lambdatest.io/index.php?route=product/compare} \\ \hline
+\url{https://opencart.abstracta.us/index.php?route=product/compare} \\ \hline
 F4 & Adding a Product to Shopping Cart &
 A user can select a desired quantity and add an in-stock product to the shopping cart, updating the cart total and item count.\newline
-Product page (e.g.\ iPod Touch): \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=32}\newline
-Cart: \url{https://ecommerce-playground.lambdatest.io/index.php?route=checkout/cart} \\ \hline
+Product page (e.g.\ iPod Touch): \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=32&search=ipod+touch}\newline
+Cart: \url{https://opencart.abstracta.us/index.php?route=checkout/cart} \\ \hline
 F5 & Submitting a Product Review &
 A user can submit feedback on a product page by entering their name, a text review (minimum character requirement), and a 1--5 star rating; the review is held for administrator approval.\newline
-Review form on the product page, e.g.\ \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/product&product_id=32} \\ \hline
+Review form on the product page, e.g.\ \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=32&search=ipod+touch} \\ \hline
 F6 & Searching for a Product &
 A user can enter search terms into the top navigation search bar to query the product catalogue and view matched results.\newline
-Search bar on every page; results page: \url{https://ecommerce-playground.lambdatest.io/index.php?route=product/search&search=iPod} \\ \hline
+Search bar on every page; results page: \url{https://opencart.abstracta.us/index.php?route=common/home} \\ \hline
 \end{longtable}}
 
 \vspace{-1ex}
@@ -212,21 +213,12 @@ Search bar on every page; results page: \url{https://ecommerce-playground.lambda
   \item F6 Searching for a Product
 \end{itemize}\vspace{2pt}\end{minipage} \\ \hline
 \end{longtable}}
-
 \vspace{-1ex}
-\instr{Indicate whether your group has already delivered (or wishes to deliver) an in-class presentation or submit a recorded presentation.}
-{\color{utsblue}\itshape
-\begin{itemize}[topsep=0pt]
-  \item For an in-class presentation, please indicate which tutorial your group attended (or wishes to attend).
-  \item For a recorded presentation, please provide a web link through which your marker can access the recording.
-\end{itemize}}
-
 We have not delivered an in class presentation.
 
 %====================================================================
 \section*{4. Task Schedule}
 %====================================================================
-\instr{Does the order of your testing tasks support parallel testing among team members? If so, explain how. If not, explain how you could improve the schedule to allow members to conduct their testing tasks in parallel.}
 
 % ---- Gantt chart starter (uncomment and edit days/tasks/names) ----
 \begin{center}
@@ -243,6 +235,8 @@ We have not delivered an in class presentation.
 \end{center}
 
 \subsection*{Parallel testing}
+
+The order the testing tasks allows for parallel testing.
 
 \begin{itemize}
 \item \textbf{Day 1:} User Registration (F2) and Product Search (F6) are tested in parallel. These two foundational functions share no dependencies, allowing both members to execute their scripts concurrently without blocking each other.
@@ -275,9 +269,6 @@ The testing environment is set up on an x64 computing platform running Windows. 
 %====================================================================
 \section*{6. Test Cases}
 %====================================================================
-\instr{If your tests have any source code, please provide the source code; if you used any prompts, describe them as well.}
-\instr{Examples of test scenarios and steps can be found on page 20 or page 25 of the Tutorial 9 slides, or in feature files (if you use the Gherkin language; see, for example, page 10 of the Tutorial 10 slides).}
-
 % Source code example (uncomment and paste your code):
 % \begin{lstlisting}[language=Python, caption={Selenium test for F1}]
 % # your code here
@@ -290,7 +281,7 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \bluehead{Test Case ID} & T001 \\ \hline
 \bluehead{Function IDs/Names} & F1: User Login \\ \hline
 \bluehead{Tester} & Nguyen Tran \\ \hline
-\bluehead{Test Scenario 1} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
@@ -299,7 +290,7 @@ The testing environment is set up on an x64 computing platform running Windows. 
   4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
@@ -308,7 +299,7 @@ The testing environment is set up on an x64 computing platform running Windows. 
   4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
@@ -317,8 +308,22 @@ The testing environment is set up on an x64 computing platform running Windows. 
   4 & Click "Login" button \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} & Tests were executed successfully
-% \includegraphics[width=\linewidth]{screenshot.png}
+\bluehead{Test Results} & Scenario 1:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc1.png}
+
+Scenario 2:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc2.png}
+
+Scenario 3:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc3.png}
+
+Tests were executed successfully
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
@@ -502,55 +507,56 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \hline
 \bluehead{Test Case ID} & T005 \\ \hline
 \bluehead{Function IDs/Names} & F5: Submitting a Product Review \\ \hline
-\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
-\bluehead{Test Scenario 1} &
+\bluehead{Tester} & Nguyen Tran \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to product page \\ \hline
+  2 & Click "Write a review" button \\ \hline
+  3 & Choose a rating (5 stars in test) \\ \hline
+  4 & Enter a name  \\ \hline
+  5 & Enter a valid text review exceeding 25 characters into "Your Review" field \\ \hline
+  6 & Click the "Continue" button to submit \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to product page \\ \hline
+  2 & Click "Write a review" button \\ \hline
+  3 & Do not select rating \\ \hline
+  4 & Leave "Your Name" field blank \\ \hline
+  5 & Leave "Your Review" field blank \\ \hline
+  6 & Click the "Continue" button to submit \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to product page \\ \hline
+  2 & Click "Write a review" button \\ \hline
+  3 & Select a rating \\ \hline
+  4 & Enter a name \\ \hline
+  5 & Enter an invalid text review (shorter than 25 characters) \\ \hline
+  6 & Click the "Continue" button to submit \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} &
-\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
-% \includegraphics[width=\linewidth]{screenshot.png}
+\bluehead{Test Results} & Scenario 1:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc1.png}
+
+Scenario 2:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc2.png}
+
+Scenario 3:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc3.png}
+
+Tests were executed successfully. It was also found out that it is possible to submit a review despite not having logged in, which can be a potential bug depending on the intention of the developer.
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
@@ -560,55 +566,50 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \hline
 \bluehead{Test Case ID} & T006 \\ \hline
 \bluehead{Function IDs/Names} & F6: Searching for a Product \\ \hline
-\bluehead{Tester} & \textcolor{utsblue}{\itshape Name of the team member who completed this test} \\ \hline
-\bluehead{Test Scenario 1} &
+\bluehead{Tester} & Nguyen Tran \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to home page \\ \hline
+  2 & Click on the search bar input field on the top navigation menu \\ \hline
+  3 & Enter a product keyword ("imac" in test) \\ \hline
+  4 & Press the ENTER key to submit the search \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to home page \\ \hline
+  2 & Click on the search bar input field on the top navigation menu \\ \hline
+  3 & Enter randomized, invalid characters \\ \hline
+  4 & Press the Enter key to submit the search \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py}{(Source Code)} &
 \vspace{1ex}
 \begin{steps}
-  1 & \textcolor{utsblue}{\itshape Describe the action to be taken, including the user behaviour, the data to be entered, and the URL.} \\ \hline
-  2 & \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & \\ \hline
-  6 & \\ \hline
-  7 & \\ \hline
-  8 & \\ \hline
-  9 & \\ \hline
-    & \textcolor{utsblue}{\itshape Add or reduce steps as you need.} \\ \hline
+  1 & Navigate to home page \\ \hline
+  2 & Click on the search bar input field on the top navigation menu \\ \hline
+  3 & Leave search bar input field empty \\ \hline
+  4 & Press the ENTER key to submit the search \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} &
-\vspace{1.5ex}\textcolor{utsblue}{\itshape Describe your test results of each test scenario. Provide screenshots wherever possible to demonstrate how the tests proceeded and the results obtained (pass, fail, or error).}
-% \includegraphics[width=\linewidth]{screenshot.png}
+\bluehead{Test Results} & Scenario 1:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc1.png}
+
+Scenario 2:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc2.png}
+
+Scenario 3:
+
+\vspace{1ex}
+\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc3.png}
+
+Tests were executed successfully.
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 

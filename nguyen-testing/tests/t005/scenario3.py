@@ -9,14 +9,17 @@ import time
 driver = webdriver.Edge()
 
 # Go to a product page
-driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/product&path=20&product_id=28")
+driver.get("https://opencart.abstracta.us/index.php?route=product/product&product_id=43")
+
+# Open review form
+review_tab = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, '#tab-review')]"))
+)
+review_tab.click()
 
 # Choosing rating 
-star_xpath = "//input[@name='rating' and @value='5']/following-sibling::label[1]"
-five_star_label = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, star_xpath))
-)
-five_star_label.click()
+rating_label = driver.find_element(By.XPATH, "//input[@name='rating' and @value='5']")
+rating_label.click()
 
 # Inputing a name
 name_textbox = driver.find_element(By.ID, "input-name")
@@ -29,6 +32,13 @@ review_textbox.send_keys("Under 25 chars")
 # Click submit review button
 submit_button = driver.find_element(By.ID, "button-review")
 submit_button.click()
+
+warning_alert = WebDriverWait(driver, 5).until(
+    EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'alert-danger')]"))
+)
+assert "Warning: Review Text must be between 25 and 1000 characters!" in warning_alert.text, "Test Failed: Warning message not displayed for empty form."
+
+print("Test Passed: Review Text error displayed correctly.")\
 
 time.sleep(5)
 driver.quit()

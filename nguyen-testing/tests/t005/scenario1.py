@@ -9,14 +9,17 @@ import time
 driver = webdriver.Edge()
 
 # Go to a product page
-driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=product/product&path=20&product_id=28")
+driver.get("https://opencart.abstracta.us/index.php?route=product/product&product_id=43")
 
-# Selecting a rating (5 stars in this case)
-star_xpath = "//input[@name='rating' and @value='5']/following-sibling::label[1]"
-five_star_label = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.XPATH, star_xpath))
+# Open review form
+review_tab = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, '#tab-review')]"))
 )
-five_star_label.click()
+review_tab.click()
+
+# Selecting a rating (5/5 in this case)
+rating_label = driver.find_element(By.XPATH, "//input[@name='rating' and @value='5']")
+rating_label.click()
 
 # Typing in a name
 name_textbox = driver.find_element(By.ID, "input-name")
@@ -29,6 +32,13 @@ review_textbox.send_keys("I can tell you're acting your heart out")
 # Click the submit review button
 submit_button = driver.find_element(By.ID, "button-review")
 submit_button.click()
+
+success_alert = WebDriverWait(driver, 5).until(
+    EC.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'alert-success')]"))
+)
+assert "Thank you for your review" in success_alert.text, "Test Failed: Success message not found."
+
+print("Test Passed: Valid review submitted.")
 
 time.sleep(5)
 driver.quit()
