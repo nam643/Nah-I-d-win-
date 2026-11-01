@@ -109,6 +109,16 @@
 \lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
         columns=fullflexible, numbers=left, numberstyle=\tiny}
 
+\newcommand{\nguyenshot}[2]{%
+  \begin{minipage}[t]{0.49\linewidth}\vspace{0pt}\centering   % \vspace{0pt} top-aligns the pair
+  \IfFileExists{nguyen-testing/test-results/#1.png}%
+    {\includegraphics[width=\linewidth]{nguyen-testing/test-results/#1.png}}%
+    {\fbox{\parbox[c][1.3cm][c]{0.92\linewidth}{\centering\scriptsize\textcolor{red}{Upload nguyen-testing/test-results/\detokenize{#1}.png}}}}%
+  \par{\scriptsize #2}\end{minipage}}
+% Code listings for any test source code
+\lstset{basicstyle=\ttfamily\footnotesize, breaklines=true, frame=single,
+        columns=fullflexible, numbers=left, numberstyle=\tiny}
+
 \begin{document}
 
 \begin{center}
@@ -160,7 +170,7 @@ Product page (e.g.\ iPod Touch): \url{https://opencart.abstracta.us/index.php?ro
 Cart: \url{https://opencart.abstracta.us/index.php?route=checkout/cart} \\ \hline
 F5 & Submitting a Product Review &
 A user can submit feedback on a product page by entering their name, a text review (minimum character requirement), and a 1--5 star rating; the review is held for administrator approval.\newline
-Review form on the product page, e.g.\ \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=32&search=ipod+touch} \\ \hline
+Review form on the product page, e.g.\ \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=43} \\ \hline
 F6 & Searching for a Product &
 A user can enter search terms into the top navigation search bar to query the product catalogue and view matched results.\newline
 Search bar on every page; results page: \url{https://opencart.abstracta.us/index.php?route=common/home} \\ \hline
@@ -274,9 +284,11 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \textbf{Environment setup}:
 \begin{itemize}
 \item Install Python for windows 
-\item Create new project directory and open it within Visual Studio Code
-\item Create a Python virtual environment
-\item Activate virtual environment and install the dependencies (Selenium)
+\item Create new project directory (\texttt{nguyen-testing}) and open it within Visual Studio Code
+\item Create a Python virtual environment: \texttt{python3 -m venv .venv}
+\item Activate virtual environment: \texttt{. .venv/Scripts/activate} and install the dependencies (Selenium):
+
+\texttt{python -m pip install -r requirements.txt}
 \end{itemize}
 
 %====================================================================
@@ -294,49 +306,47 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \bluehead{Test Case ID} & T001 \\ \hline
 \bluehead{Function IDs/Names} & F1: User Login \\ \hline
 \bluehead{Tester} & Nguyen Tran \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py}{(Source Code)} &
+\bluehead{Purpose} & Verify that users can log in with their registered account and corresponding password and the system correctly handles invalid input. \\ \hline
+\bluehead{Preconditions} & Browser logged out. \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py}{(Source Code)}\newline{\small Valid login (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
   2 & Enter a registered email into "E-mail address" field (validemail@gmail.com in test) \\ \hline
   3 & Enter corresponding password into "Password" field (correctpassword in test)\\ \hline
   4 & Click "Login" button \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The user successfully logs in and is directed to the account info page.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py}{(Source Code)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py}{(Source Code)}\newline{\small Empty submission (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
   2 & Leave "E-mail Address" field completely blank \\ \hline
   3 & Leave "Password" field completely blank \\ \hline
   4 & Click "Login" button \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} Systems reject the invalid login form and displays an error message. } \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py}{(Source Code)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py}{(Source Code)}\newline{\small Invalid submission (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
   2 & Enter an unregistered email into "E-mail address" field (notvalidemail@gmail.com in test) \\ \hline
   3 & Enter any password into "Password" field (incorrectpassword in test)\\ \hline
   4 & Click "Login" button \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} Systems reject the invalid login form and displays an error message. } \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} & Scenario 1:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc1.png}
-
-Scenario 2:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc2.png}
-
-Scenario 3:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t001-sc3.png}
-
-Tests were executed successfully
+\results{%
+  S1 & All fields valid & User logs in & User directed to account info page & Pass & \ev{t001-sc1} \\ \hline
+  S2 & Empty fields & Missing/incorrect field warning & ``Warning: No match for E-Mail Address and/or Password.'' & Pass & \ev{t001-sc2} \\ \hline
+  S3a & Incorrect fields & Missing/incorrect field warning & ``Warning: No match for E-Mail Address and/or Password.'' & Pass & \ev{t001-sc3} \\ \hline
+}
+\bluehead{Screenshots} & \vspace{1ex}
+\nguyenshot{t001-sc1}{S1: Valid login}\hfill\nguyenshot{t001-sc2}{S2: Empty submission}\par\vspace{4pt}
+\nguyenshot{t001-sc3}{S3: Invalid submission}\par\vspace{4pt}
+All 3 checks passed, no defects found.
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
@@ -530,7 +540,9 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \bluehead{Test Case ID} & T005 \\ \hline
 \bluehead{Function IDs/Names} & F5: Submitting a Product Review \\ \hline
 \bluehead{Tester} & Nguyen Tran \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py}{(Source Code)} &
+\bluehead{Purpose} & Verify that users can submit a valid product review and system rejects invalid ones. \\ \hline
+\bluehead{Preconditions} & User in on a product page \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py}{(Source Code)}\newline{\small Valid review (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -539,9 +551,10 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   4 & Enter a name  \\ \hline
   5 & Enter a valid text review exceeding 25 characters into "Your Review" field \\ \hline
   6 & Click the "Continue" button to submit \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The review is submitted successfully.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py}{(Source Code)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py}{(Source Code)}\newline{\small Empty review (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -550,9 +563,10 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   4 & Leave "Your Name" field blank \\ \hline
   5 & Leave "Your Review" field blank \\ \hline
   6 & Click the "Continue" button to submit \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} A warning about empty fields is displayed.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py}{(Source Code)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py}{(Source Code)}\newline{\small Invalid review (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -561,24 +575,18 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   4 & Enter a name \\ \hline
   5 & Enter an invalid text review (shorter than 25 characters) \\ \hline
   6 & Click the "Continue" button to submit \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} A warning about review text length is displayed.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} & Scenario 1:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc1.png}
-
-Scenario 2:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc2.png}
-
-Scenario 3:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t005-sc3.png}
-
-Tests were executed successfully. It was also found out that it is possible to submit a review despite not having logged in, which can be a potential bug depending on the intention of the developer.
+\results{%
+  S1 & All fields valid & Review submitted successfully & ``Thank you for your review'' & Pass & \ev{t005-sc1} \\ \hline
+  S2 & Empty fields & Missing field warning & ``Warning: Please select a review rating!'' & Pass & \ev{t005-sc2} \\ \hline
+  S3a & Incorrect fields & Text review field is too short warning & ``Warning: Review Text must be between 25 and 1000 characters!'' & Pass & \ev{t005-sc3} \\ \hline
+}
+\bluehead{Test Results} & \vspace{1ex}
+\nguyenshot{t005-sc1}{S1: Valid review}\hfill\nguyenshot{t005-sc2}{S2: Empty review}\par\vspace{4pt}
+\nguyenshot{t005-sc3}{S3: Invalid review}\par\vspace{4pt}
+All 3 checks passed. It was also found out that it is possible to submit a review despite not having logged in, which can be a potential bug depending on the intention of the developer.
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
@@ -589,57 +597,53 @@ Tests were executed successfully. It was also found out that it is possible to s
 \bluehead{Test Case ID} & T006 \\ \hline
 \bluehead{Function IDs/Names} & F6: Searching for a Product \\ \hline
 \bluehead{Tester} & Nguyen Tran \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py}{(Source Code)} &
+\bluehead{Purpose} & Verify searching function on website works properly. \\ \hline
+\bluehead{Preconditions} & N/A \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py}{(Source Code)}\newline{\small Valid search (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Enter a product keyword ("imac" in test) \\ \hline
   4 & Press the ENTER key to submit the search \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results includes the product that was searched for.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py}{(Source Code)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py}{(Source Code)}\newline{\small Invalid search (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Enter randomized, invalid characters \\ \hline
   4 & Press the Enter key to submit the search \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results is empty.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py}{(Source Code)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py}{(Source Code)}\newline{\small Empty search (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Leave search bar input field empty \\ \hline
   4 & Press the ENTER key to submit the search \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results is empty.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Results} & Scenario 1:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc1.png}
-
-Scenario 2:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc2.png}
-
-Scenario 3:
-
-\vspace{1ex}
-\includegraphics[width=\linewidth]{nguyen-testing/test-results/t006-sc3.png}
-
-Tests were executed successfully.
+\results{%
+  S1 & Search field contains valid product & Product appears in search result & Product appears correctly & Pass & \ev{t006-sc1} \\ \hline
+  S2 & Search field contains random/invalid characters & No products show up in search & No products show up & Pass & \ev{t006-sc2} \\ \hline
+  S3 & Search field is empty & No products show up in search & No products show up & Pass & \ev{t006-sc3} \\ \hline
+}
+\bluehead{Test Results} & \vspace{1ex}
+\nguyenshot{t006-sc1}{S1: Valid search}\hfill\nguyenshot{t006-sc2}{S2: Invalid search}\par\vspace{4pt}
+\nguyenshot{t006-sc3}{S3: Empty search}\par\vspace{4pt}
+All 3 checks passed, no defects found.
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
 %====================================================================
 \section*{7. Analysis and Reflections}
 %====================================================================
-\instr{Provide basic statistics for the tests conducted by your group, including how many passed, failed, or resulted in errors. List any defects that you identified on the website.}
-\instr{Reflect on the tests you have conducted and identify the successes and failures in your group's efforts. What lessons did you learn? How would you approach the system testing tasks differently if given a second chance?}
 \subsection*{Test statistics}
 The testers executed six test cases containing 30 checks which there are 24 passed, 6 failed and 0 ended in an error. A \emph{fail} means the site behaved differently from the expected result (a possible defect), while an \emph{error} means 
 the test itself could not complete (for example, an element was not found), which is the problem with the test rather than the site.
