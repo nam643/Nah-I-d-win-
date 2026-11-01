@@ -172,7 +172,7 @@ Search bar on every page; results page: \url{https://opencart.abstracta.us/index
 \begin{itemize}
   \item F1 depends on F2: A user profile must exist before testing valid authentication credentials on the login page.
   \item F3, F4 and F5 depend on F6 in our test flow: these pages can also be opened directly by URL, so this is not a hard system dependency, but our scenarios reach each product through search, as a real shopper would, so F6 is tested first.
-  \item F5 may depend on F1: if the review form asks guests to log in \VERIFY{guest reviews}, the reviewer must log in first.
+  \item F5 may depend on F1: if the review form asks guests to log in, the reviewer must log in first.
   \item F2 and F6 have no dependencies and can be tested at any time.
 \end{itemize}
 
@@ -255,9 +255,6 @@ The order the testing tasks allows for parallel testing.
 %====================================================================
 \section*{5. Test Environments and Tools}
 %====================================================================
-\instr{Describe your computing platforms (Arm, x86), operating systems (macOS, Linux, Windows), and how you set up your testing environments (programming languages, test automation tools, libraries, code editors, and IDEs), step by step.}
-\instr{If your group members use different environment configurations or tools, describe each member's environment and tools separately.}
-
 \subsection*{Nam}
 The testing environment is set up on an x64 computer running Windows 11 with Ubuntu installed through the Windows Subsystem for Linux (WSL2, Linux kernel 6.6.114.1); the tests are written and run inside Ubuntu. All automated tests are written in Python 3.14.4 using the Selenium WebDriver library (4.52.0) and organised with the pytest test framework (9.2.0), which runs every input of every scenario, records pass or fail for each, and produces an HTML report through the pytest-html plugin. Code is written in Visual Studio Code. Two shared files hold the code every test case uses: \texttt{helpers.py} (page locators, waits, screenshots and one action per function) and \texttt{conftest.py} (opening and closing a fresh Chrome window for each test, and saving a screenshot whenever a test fails). Using Chrome for Testing alongside Nguyen's Edge also means the site was exercised in two browsers.
 
