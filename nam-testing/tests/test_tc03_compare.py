@@ -51,15 +51,21 @@ def test_tc03_s2_remove_until_empty(driver):
     assert not removes_for(driver, IPOD_TOUCH)                      # the removed one is gone
 
     helpers.click(driver, removes_for(driver, IPOD_NANO)[0])        # (b) remove the last product
-    shown = helpers.wait_for_text(driver, helpers.MSG_COMPARE_EMPTY)
+    empty_b = helpers.wait_for_text(driver, helpers.MSG_COMPARE_EMPTY, timeout=5)
+    page_b = driver.find_element(By.ID, "content").text
     helpers.shot(driver, "TC03_S2b")
-    assert shown
+    assert not helpers.compare_removes(driver), "No product column should remain"
 
     driver.delete_all_cookies()                                     # (c) fresh session, open URL directly
     driver.get(helpers.url("product/compare"))
-    shown = helpers.wait_for_text(driver, helpers.MSG_COMPARE_EMPTY)
+    empty_c = helpers.wait_for_text(driver, helpers.MSG_COMPARE_EMPTY, timeout=5)
+    page_c = driver.find_element(By.ID, "content").text
     helpers.shot(driver, "TC03_S2c")
-    assert shown
+    assert not helpers.compare_removes(driver), "A new session should have an empty list"
+
+    # Both screenshots are saved first, so a wrong message is reported without hiding S2c.
+    assert empty_b, f"S2b: empty list should say '{helpers.MSG_COMPARE_EMPTY}', page shows: {page_b!r}"
+    assert empty_c, f"S2c: empty list should say '{helpers.MSG_COMPARE_EMPTY}', page shows: {page_c!r}"
 
 
 def test_tc03_s3_four_product_limit_and_duplicates(driver):
