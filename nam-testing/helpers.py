@@ -23,6 +23,8 @@ from urllib.parse import unquote, urlencode
 from selenium.common.exceptions import (
     ElementClickInterceptedException,
     ElementNotInteractableException,
+    NoSuchElementException,
+    StaleElementReferenceException,
     TimeoutException,
 )
 from selenium.webdriver.common.by import By
@@ -93,7 +95,7 @@ MSG_PRIVACY = "You must agree to the Privacy Policy"
 MSG_CONFIRM_MISMATCH = "Password confirmation does not match password"
 MSG_FIRSTNAME_LENGTH = "First Name must be between 1 and 32 characters"
 MSG_PASSWORD_LENGTH = "Password must be between 4 and 20 characters"
-MSG_ACCOUNT_CREATED = "Your Account Has Been Created"
+MSG_ACCOUNT_CREATED = "Your new account has been successfully created"
 MSG_COMPARE_ADDED = "to your product comparison"
 MSG_COMPARE_MODIFIED = "You have modified your product comparison"
 MSG_COMPARE_EMPTY = "You have not chosen any products to compare"
@@ -167,8 +169,15 @@ def type_into(element, text):
 
 
 def body_text(driver):
-    """All visible text on the page (used to look for alerts and messages)."""
-    return driver.find_element(By.TAG_NAME, "body").text
+    """All visible text on the page (used to look for alerts and messages).
+    A page that is still reloading can invalidate the <body> element between the two calls,
+    so retry a few times instead of failing the test on that timing accident."""
+    for _ in range(5):
+        try:
+            return driver.find_element(By.TAG_NAME, "body").text
+        except (StaleElementReferenceException, NoSuchElementException):
+            time.sleep(0.3)
+    return ""
 
 
 def wait_for_text(driver, text, timeout=TIMEOUT):
@@ -185,6 +194,36 @@ def wait_for_any_text(driver, texts, timeout=5):
     try:
         return WebDriverWait(driver, timeout).until(
             lambda d: next((t for t in texts if t in body_text(d)), False)
+        )
+    except TimeoutException:
+        return None
+
+
+def watch_alerts(driver):
+    """Start recording every alert banner the page shows from now on.
+    OpenCart removes its alerts about 7 seconds after a button click, so checking the page
+    now and then can miss one; this recorder cannot."""
+    driver.execute_script("""
+        window.__alerts = [];
+        var grab = function () {
+            document.querySelectorAll('.alert').forEach(function (a) {
+                var t = (a.innerText || '').trim();
+                if (t && window.__alerts.indexOf(t) === -1) { window.__alerts.push(t); }
+            });
+        };
+        new MutationObserver(grab).observe(document.body, {childList: true, subtree: true, characterData: true});
+    """)
+
+
+def wait_for_alert(driver, timeout=TIMEOUT):
+    """Return the text of the first alert banner shown since watch_alerts() (or, failing that,
+    one that is on the page now); None if no alert appears within the timeout."""
+    try:
+        return WebDriverWait(driver, timeout, ignored_exceptions=(StaleElementReferenceException,)).until(
+            lambda d: d.execute_script(
+                "return (window.__alerts && window.__alerts[0]) || "
+                "(document.querySelector('.alert') && document.querySelector('.alert').innerText.trim()) || '';"
+            ) or False
         )
     except TimeoutException:
         return None
@@ -254,10 +293,23 @@ def result_names(driver):
     return [e.text.strip() for e in driver.find_elements(*RESULT_NAMES) if e.text.strip()]
 
 
+def wait_ajax_idle(driver, timeout=TIMEOUT):
+    """Wait until the page has finished loading and no jQuery AJAX request is still running.
+    OpenCart saves the session at the end of every request without locking, so a click that lands
+    while the page's own background requests are running can be overwritten (a product silently
+    missing from the comparison list or cart). Waiting here keeps the tests from causing that."""
+    try:
+        WebDriverWait(driver, timeout).until(lambda d: d.execute_script(
+            "return document.readyState === 'complete' && (!window.jQuery || window.jQuery.active === 0);"))
+    except TimeoutException:
+        pass
+
+
 def open_product(driver, product_id):
     """Open a product page directly by its ID."""
     driver.get(url("product/product", product_id=product_id))
     WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.TAG_NAME, "h1")))
+    wait_ajax_idle(driver)
 
 
 def open_from_results(driver, product_id):
@@ -273,8 +325,11 @@ def open_from_results(driver, product_id):
 def add_to_compare(driver, product_id):
     """F3: open a product page and click 'Compare this Product'; return True if the success alert appeared."""
     open_product(driver, product_id)
+    watch_alerts(driver)
     click(driver, visible(driver, compare_button(product_id)))
-    return wait_for_text(driver, MSG_COMPARE_ADDED)
+    added = MSG_COMPARE_ADDED in (wait_for_alert(driver) or "")
+    wait_ajax_idle(driver)
+    return added
 
 
 def compare_removes(driver):
@@ -284,7 +339,11 @@ def compare_removes(driver):
 
 def add_to_cart(driver, quantity):
     """F4: on an open product page, set the quantity and click Add to Cart."""
+    wait_ajax_idle(driver)
     type_into(visible(driver, QUANTITY_INPUT), str(quantity))
+    # Remove the previous "Success" alert so the next wait sees only the alert of THIS click
+    driver.execute_script("document.querySelectorAll('.alert').forEach(function (a) { a.remove(); });")
+    watch_alerts(driver)
     click(driver, visible(driver, ADD_TO_CART_BUTTON))
 
 
