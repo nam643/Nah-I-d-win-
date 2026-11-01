@@ -1,7 +1,7 @@
 """
 T004 - F4 Adding a Product to Shopping Cart
 Tester: Nam
-Product: iPod Touch (product_id=32), $122.00 incl. tax, 999 in stock in the demo catalogue.
+Product: iPod Touch (product_id=32), $122.00 incl. tax, 998 in stock when the tests were written.
 Each test gets a new browser, so the cart starts empty.
 Totals are compared with Decimal (exact), never floats.
 Evidence: evidence/TC04_*.png
@@ -21,12 +21,12 @@ def test_tc04_s1_add_valid_quantities(driver):
     helpers.open_from_results(driver, IPOD_TOUCH)
 
     helpers.add_to_cart(driver, 1)
-    shown = helpers.wait_for_text(driver, helpers.MSG_CART_ADDED)
+    shown = helpers.MSG_CART_ADDED in (helpers.wait_for_alert(driver) or "")
     helpers.shot(driver, "TC04_S1a")
     assert shown, "No 'added to your shopping cart' alert"
 
     helpers.add_to_cart(driver, 2)
-    assert helpers.wait_for_text(driver, helpers.MSG_CART_ADDED)
+    assert helpers.MSG_CART_ADDED in (helpers.wait_for_alert(driver) or "")
 
     lines = helpers.cart_lines(driver)
     helpers.shot(driver, "TC04_S1b")
@@ -42,21 +42,21 @@ def test_tc04_s1_add_valid_quantities(driver):
 def test_tc04_s2_invalid_quantities(driver, case, quantity):
     helpers.open_product(driver, IPOD_TOUCH)
     helpers.add_to_cart(driver, quantity)
-    message = helpers.wait_for_any_text(driver, ["Minimum", "Warning", helpers.MSG_CART_ADDED])
-    helpers.shot(driver, f"TC04_S2{case}")                          # records whatever the site said
+    alert = helpers.wait_for_alert(driver)                          # whatever the site says (None = no alert)
+    helpers.shot(driver, f"TC04_S2{case}")
     lines = helpers.cart_lines(driver)
+    helpers.shot(driver, f"TC04_S2{case}_cart")                     # the cart page right after
     assert lines == [], f"Cart should be empty after quantity {quantity!r}, got {lines}"
     # The invalid quantity must be refused, not confirmed with the normal success alert
-    assert message != helpers.MSG_CART_ADDED, (
-        f"Quantity {quantity!r}: the site showed the 'added to your shopping cart' success alert, "
-        "although nothing was added (cart is empty)")
+    assert helpers.MSG_CART_ADDED not in (alert or ""), (
+        f"Quantity {quantity!r}: the site showed {alert!r}, although nothing was added (cart is empty)")
 
 
 def test_tc04_s3_quantity_above_stock(driver):
-    """S3 (edge): quantity 9999 -> cart flags the line (***) and checkout does not proceed."""
+    """S3 (edge): quantity 9999 (stock 998) -> cart flags the line (***) and checkout must not proceed."""
     helpers.open_product(driver, IPOD_TOUCH)
     helpers.add_to_cart(driver, 9999)
-    helpers.wait_for_any_text(driver, ["Minimum", "Warning", helpers.MSG_CART_ADDED])
+    helpers.wait_for_alert(driver)
 
     helpers.cart_lines(driver)                                      # opens the cart page
     stock_warning = helpers.wait_for_text(driver, helpers.MSG_CART_STOCK, timeout=5)
@@ -66,4 +66,5 @@ def test_tc04_s3_quantity_above_stock(driver):
     driver.get(helpers.url("checkout/checkout"))                    # try to check out
     WebDriverWait(driver, helpers.TIMEOUT).until(lambda d: helpers.on_route(d, "checkout/"))
     helpers.shot(driver, "TC04_S3b")
-    assert helpers.on_route(driver, "checkout/cart"), "Checkout should send the user back to the cart"
+    assert helpers.on_route(driver, "checkout/cart"), (
+        f"Checkout should send the user back to the cart, but the browser is on {driver.current_url}")

@@ -2,6 +2,5 @@
 selenium-cache/
 __pycache__/
 .pytest_cache/
-evidence/
 report.html
 *.deb
