@@ -19,8 +19,7 @@
 \usepackage[colorlinks=true,linkcolor=black]{hyperref}
 
 % ---------- Colours ----------
-\definecolor{utsblue}{RGB}{52,120,190}
-\definecolor{instr}{RGB}{52,120,190}
+\definecolor{utsblue}{RGB}{0,0,0}
 \definecolor{headgray}{gray}{0.92}
 \definecolor{memA}{RGB}{91,155,213}
 \definecolor{memB}{RGB}{112,173,71}
@@ -49,6 +48,7 @@
 % Blue italic assignment instructions (delete these once you've written your answers)
 \newcommand{\instr}[1]{{\color{utsblue}\itshape #1\par}}
 \newcommand{\bluehead}[1]{\textcolor{utsblue}{\textbf{#1}}}
+\newcommand{\links}[1]{\textcolor{memA}{\textbf{#1}}}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}}
 
@@ -128,7 +128,7 @@
 %====================================================================
 \section*{1. Overview}
 %====================================================================
-The website \href{https://opencart.abstracta.us/index.php?route=common/home}{Abstracta} is an online e-commerce platform specializing in consumer electronics and computer hardware, built on OpenCart and hosted by a software testing commpany Abstracta as a practice target for web test automation. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and purchase them through a multi-step checkout process. Other features include comparing products side by side, wishlisting items, writing product reviews, subscribing to newsletters, managing and editing user profiles and address books, viewing order history and reward points, tracking orders, and contacting the store through a Contact Us form.
+The website \href{https://opencart.abstracta.us/index.php?route=common/home}{Abstracta} is an online e-commerce platform specializing in consumer electronics and computer hardware, built on OpenCart and hosted by a software testing company Abstracta as a practice target for web test automation. The store allows customers to discover products through promotions, browse through categories or manually search for a specific item. Users can add items to their shopping cart and purchase them through a multi-step checkout process. Other features include comparing products side by side, wishlisting items, writing product reviews, subscribing to newsletters, managing and editing user profiles and address books, viewing order history and reward points, tracking orders, and contacting the store through a Contact Us form.
 
 Business goals:
 \begin{itemize}
@@ -173,7 +173,7 @@ A user can submit feedback on a product page by entering their name, a text revi
 Review form on the product page, e.g.\ \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=43} \\ \hline
 F6 & Searching for a Product &
 A user can enter search terms into the top navigation search bar to query the product catalogue and view matched results.\newline
-Search bar on every page; results page: \url{https://opencart.abstracta.us/index.php?route=common/home} \\ \hline
+Search bar on every page; results page, e.g.\ \url{https://opencart.abstracta.us/index.php?route=product/search&search=imac} \\ \hline
 \end{longtable}}
 
 \vspace{-1ex}
@@ -181,8 +181,8 @@ Search bar on every page; results page: \url{https://opencart.abstracta.us/index
 \subsection*{Dependencies}
 \begin{itemize}
   \item F1 depends on F2: A user profile must exist before testing valid authentication credentials on the login page.
-  \item F3, F4 and F5 depend on F6 in our test flow: these pages can also be opened directly by URL, so this is not a hard system dependency, but our scenarios reach each product through search, as a real shopper would, so F6 is tested first.
-  \item F5 may depend on F1: if the review form asks guests to log in, the reviewer must log in first.
+  \item F3, F4 and F5 depend on F6 in our test flow only: a shopper normally reaches a product page through search, but product pages can also be opened directly by URL, so this is not a hard dependency. T003 S1 and T004 S1 reach their products through search, while the other scenarios open the product URL directly.
+  \item F5 does not depend on F1: T005 showed that guests can submit a review without logging in (D01), although F5 was scheduled after F1 as a precaution.
   \item F2 and F6 have no dependencies and can be tested at any time.
 \end{itemize}
 
@@ -202,12 +202,11 @@ Search bar on every page; results page: \url{https://opencart.abstracta.us/index
   \draw[soft] (F6.east) -- (F3.west);
   \draw[soft] (F6.east) -- (F5.west);
   \draw[soft] (F6.east) -- (F4.west);
-  \draw[soft] (F1) -- node[lab, right]{if login required} (F5);
 \end{tikzpicture}
 
 {\small Solid arrows: hard dependencies. Dashed arrows: test-flow or conditional dependencies.}
 \end{center}
-
+\clearpage
 %====================================================================
 \section*{3. Test Team}
 %====================================================================
@@ -225,7 +224,7 @@ Search bar on every page; results page: \url{https://opencart.abstracta.us/index
 26037299 & Nguyen Tran (\href{mailto:nguyenphuongduy.tran@student.uts.edu.au}{\nolinkurl{nguyenphuongduy.tran@student.uts.edu.au}}) &Tester &
 \begin{minipage}[t]{\linewidth}\begin{itemize}[nosep,leftmargin=1.2em]
   \item F1 User Login
-  \item F5 Submitting a Product Reivew
+  \item F5 Submitting a Product Review
   \item F6 Searching for a Product
 \end{itemize}\vspace{2pt}\end{minipage} \\ \hline
 \end{longtable}}
@@ -252,12 +251,12 @@ We have not delivered an in class presentation.
 
 \subsection*{Parallel testing}
 
-The order the testing tasks allows for parallel testing.
+The order of the testing tasks allows for parallel testing.
 
 \begin{itemize}
 \item \textbf{Day 1:} User Registration (F2) and Product Search (F6) are tested in parallel. These two foundational functions share no dependencies, allowing both members to execute their scripts concurrently without blocking each other.
-\item \textbf{Day 2:} Once Day 1 functions have been tested, workflows remain in parallel but leverage the results of prior work. User Login (F1) utilizes the accounts generated in F2. Simultaneously, products compared in F3 and used to add to cart in F4 comes from search results in F6
-\item \textbf{Day 3:} the remaining task Product Review (F5) may require an authenticated user, scheduling it after F1 on Day 2 ensures all system conditions are met before testing
+\item \textbf{Day 2:} Once Day 1 functions have been tested, workflows remain in parallel but leverage the results of prior work. User Login (F1) utilizes the accounts generated in F2. Simultaneously, products compared in F3 and used to add to cart in F4 come from search results in F6.
+\item \textbf{Day 3:} Product Review (F5) was scheduled after User Login (F1) as a precaution, in case reviews required an account. Testing later showed that guests can submit reviews (D01), so F5 could have run in parallel on Day 1 or Day 2.
 \end{itemize}
 
 \textbf{Improvements for Parallelisation:} To further optimize this schedule and decouple the tasks entirely, both members could bypass the Search (F6) dependency by navigating directly to hardcoded product URLs. This would allow F3, F4, and F5 to be tested completely independently of F6's completion status.
@@ -270,30 +269,33 @@ The testing environment is set up on an x64 computer running Windows 11 with Ubu
 
 \textbf{Environment setup}:
 \begin{itemize}
-\item Install WSL with Ubuntu (\texttt{wsl --install}) and make sure Python 3 with \texttt{venv} is available in Ubuntu
+\item Install WSL with Ubuntu (\texttt{wsl -{}-install}) and make sure Python 3 with \texttt{venv} is available in Ubuntu
 \item Get the test project folder (\texttt{nam-testing}) from the GitHub repository and open it in the Ubuntu terminal
 \item Create a Python virtual environment: \texttt{python3 -m venv .venv}
 \item Activate it with \texttt{source .venv/bin/activate} and install the dependencies (Selenium, pytest, pytest-html): \texttt{python -m pip install -r requirements.txt}
 \item Check the set-up with \texttt{python check\_env.py}, which downloads Chrome for Testing into the virtual environment on first use and prints the operating system, CPU architecture and the Python, Selenium, pytest, Chrome and ChromeDriver versions
-\item Run the tests, e.g.\ \texttt{HEADLESS=1 pytest --html=report.html --self-contained-html}; screenshots are saved to the \texttt{evidence} folder
+\item Run the tests, e.g.\ \texttt{HEADLESS=1 pytest -{}-html=report.html -{}-self-contained-html}; screenshots are saved to the \texttt{evidence} folder
 \end{itemize}
 
 \subsection*{Nguyen Tran}
-The testing environment is set up on an x64 computing platform running Windows. All automated testing is developed in Python 3 using the Selenium WebDriver library and written within Visual Studio Code (VS Code). To maintain isolated project dependencies, a Python virtual environment (venv) is utilized. Test execution is performed using the Microsoft Edge browser, with the Python Selenium bindings automatically managing the Edge WebDriver.
+The testing environment is set up on an x64 computing platform running Windows 11. All automated testing is developed in Python 3.14 using the Selenium WebDriver library (4.52.0) and written within Visual Studio Code (VS Code). To maintain isolated project dependencies, a Python virtual environment (venv) is utilized. Test execution is performed using the Microsoft Edge browser (156.0.4314.58), with Selenium Manager, which is built into the Python Selenium bindings, automatically downloading and managing the matching Edge WebDriver. Each test scenario is a separate Python script that opens Edge, performs the steps, checks the result with an \texttt{assert} statement and prints ``Test Passed'' when the check succeeds.
 
 \textbf{Environment setup}:
 \begin{itemize}
 \item Install Python for windows 
 \item Create new project directory (\texttt{nguyen-testing}) and open it within Visual Studio Code
 \item Create a Python virtual environment: \texttt{python3 -m venv .venv}
-\item Activate virtual environment: \texttt{. .venv/Scripts/activate} and install the dependencies (Selenium):
+\item Activate virtual environment: \texttt{source .venv/Scripts/activate} and install the dependencies (Selenium):
 
 \texttt{python -m pip install -r requirements.txt}
+\item Run a scenario from the \texttt{nguyen-testing} folder, e.g.\ \texttt{python tests/t001/scenario1.py}; the script prints ``Test Passed'' or stops with an \texttt{AssertionError} if the check fails
 \end{itemize}
 
+\clearpage
 %====================================================================
 \section*{6. Test Cases}
 %====================================================================
+Each ``(Source Code)'' label below is a clickable link to that scenario's code on GitHub; all links are also listed in Appendix~A.
 % Source code example (uncomment and paste your code):
 % \begin{lstlisting}[language=Python, caption={Selenium test for F1}]
 % # your code here
@@ -308,7 +310,7 @@ The testing environment is set up on an x64 computing platform running Windows. 
 \bluehead{Tester} & Nguyen Tran \\ \hline
 \bluehead{Purpose} & Verify that users can log in with their registered account and corresponding password and the system correctly handles invalid input. \\ \hline
 \bluehead{Preconditions} & Browser logged out. \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py}{(Source Code)}\newline{\small Valid login (success)} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py}{\links{\links{(Source Code)}}}\newline{\small Valid login (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
@@ -318,30 +320,30 @@ The testing environment is set up on an x64 computing platform running Windows. 
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The user successfully logs in and is directed to the account info page.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py}{(Source Code)}\newline{\small Empty submission (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py}{\links{(Source Code)}}\newline{\small Empty submission (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
   2 & Leave "E-mail Address" field completely blank \\ \hline
   3 & Leave "Password" field completely blank \\ \hline
   4 & Click "Login" button \\ \hline
-  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} Systems reject the invalid login form and displays an error message. } \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The systems reject the invalid login form and displays an error message. } \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py}{(Source Code)}\newline{\small Invalid submission (validation)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py}{\links{(Source Code)}}\newline{\small Invalid submission (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to the login page \\ \hline
   2 & Enter an unregistered email into "E-mail address" field (notvalidemail@gmail.com in test) \\ \hline
   3 & Enter any password into "Password" field (incorrectpassword in test)\\ \hline
   4 & Click "Login" button \\ \hline
-  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} Systems reject the invalid login form and displays an error message. } \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The systems rejects the invalid login form and displays an error message. } \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
 \results{%
   S1 & All fields valid & User logs in & User directed to account info page & Pass & \ev{t001-sc1} \\ \hline
   S2 & Empty fields & Missing/incorrect field warning & ``Warning: No match for E-Mail Address and/or Password.'' & Pass & \ev{t001-sc2} \\ \hline
-  S3a & Incorrect fields & Missing/incorrect field warning & ``Warning: No match for E-Mail Address and/or Password.'' & Pass & \ev{t001-sc3} \\ \hline
+  S3 & Incorrect fields & Missing/incorrect field warning & ``Warning: No match for E-Mail Address and/or Password.'' & Pass & \ev{t001-sc3} \\ \hline
 }
 \bluehead{Screenshots} & \vspace{1ex}
 \nguyenshot{t001-sc1}{S1: Valid login}\hfill\nguyenshot{t001-sc2}{S2: Empty submission}\par\vspace{4pt}
@@ -360,7 +362,7 @@ All 3 checks passed, no defects found.
 \bluehead{Tester} & Nam \\ \hline
 \bluehead{Purpose} & Verify that a new visitor can register with valid details, that duplicate or invalid submissions are rejected with the right message, and that the length limits on First Name (1--32 characters) and Password (4--20 characters) are enforced at their boundaries. \\ \hline
 \bluehead{Preconditions} & Browser logged out. A unique email is generated for each run (\texttt{a3tester.<timestamp>@example.com}); one extra account is registered at the start of the run for the duplicate-email input. \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L13}{(Source Code)}\newline{\small Valid registration (success)} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L13}{\links{(Source Code)}}\newline{\small Valid registration (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open \url{https://opencart.abstracta.us/index.php?route=account/register} \\ \hline
@@ -372,7 +374,7 @@ All 3 checks passed, no defects found.
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The account is created, the user is logged in and the success page \texttt{route=account/success} is shown.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L33}{(Source Code)}\newline{\small Invalid submissions (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L33}{\links{(Source Code)}}\newline{\small Invalid submissions (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open the register URL for each input below, filling every other field with valid data. \\ \hline
@@ -383,7 +385,7 @@ All 3 checks passed, no defects found.
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} (a) ``Warning: E-Mail Address is already registered!''; (b) ``Warning: You must agree to the Privacy Policy!''; (c) ``Password confirmation does not match password!''. The user stays on the register page.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L57}{(Source Code)}\newline{\small Length boundaries (edge)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L57}{\links{(Source Code)}}\newline{\small Length boundaries (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open the register URL for each input below, filling every other field with valid data and ticking the Privacy Policy. \\ \hline
@@ -421,7 +423,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \bluehead{Tester} & Nam \\ \hline
 \bluehead{Purpose} & Verify that products added to the comparison list appear side by side with correct details, that products can be removed until the list is empty, and that the list keeps at most four products without duplicates. \\ \hline
 \bluehead{Preconditions} & F6 Search works. Each scenario starts in a new browser session, so the comparison list is empty. Products (product\_id): iPod Touch 32, iPod Nano 36, iPod Shuffle 34, iPod Classic 48, iPhone 40. \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L21}{(Source Code)}\newline{\small Compare two products (success)} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L21}{\links{(Source Code)}}\newline{\small Compare two products (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open the home page and search \texttt{iPod} with the header search bar (F6). \\ \hline
@@ -433,7 +435,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} A two-column comparison table showing iPod Touch and iPod Nano with correct details.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L40}{(Source Code)}\newline{\small Remove products and empty list (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L40}{\links{(Source Code)}}\newline{\small Remove products and empty list (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Add iPod Touch and iPod Nano to the comparison list and open the comparison page. \\ \hline
@@ -444,7 +446,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} (a) one column left; (b) and (c) ``You have not chosen any products to compare.'' with no error page.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L71}{(Source Code)}\newline{\small List size limit and duplicates (edge)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L71}{\links{(Source Code)}}\newline{\small List size limit and duplicates (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Add, in order: iPod Touch, iPod Nano, iPod Shuffle, iPod Classic (4 products). \\ \hline
@@ -481,7 +483,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \bluehead{Tester} & Nam \\ \hline
 \bluehead{Purpose} & Verify that valid quantities are added and totalled correctly, that zero, negative and non-numeric quantities are rejected, and how the cart handles a quantity above the available stock. \\ \hline
 \bluehead{Preconditions} & F6 Search works. Each scenario starts in a new browser session with an empty cart. Product: iPod Touch (\texttt{product\_id=32}), \$122.00 including tax (\$100.00 + 20\% VAT + \$2.00 eco tax), 998 in stock when the tests were written. \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L18}{(Source Code)}\newline{\small Add valid quantities (success)} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L18}{\links{(Source Code)}}\newline{\small Add valid quantities (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Search \texttt{iPod Touch} (F6) and open the product: \url{https://opencart.abstracta.us/index.php?route=product/product&product_id=32} \\ \hline
@@ -494,7 +496,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \[ \text{Line total} = 3 \times \$122.00 = \$366.00 \]} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L42}{(Source Code)}\newline{\small Invalid quantities (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L42}{\links{(Source Code)}}\newline{\small Invalid quantities (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open the iPod Touch product page in a new session (empty cart). \\ \hline
@@ -505,7 +507,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} Each invalid quantity is rejected with a warning (or the field refuses the value), no success alert is shown, and the cart stays empty.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L55}{(Source Code)}\newline{\small Quantity above stock (edge)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L55}{\links{(Source Code)}}\newline{\small Quantity above stock (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Open the iPod Touch product page in a new session. \\ \hline
@@ -541,8 +543,8 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \bluehead{Function IDs/Names} & F5: Submitting a Product Review \\ \hline
 \bluehead{Tester} & Nguyen Tran \\ \hline
 \bluehead{Purpose} & Verify that users can submit a valid product review and system rejects invalid ones. \\ \hline
-\bluehead{Preconditions} & User in on a product page \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py}{(Source Code)}\newline{\small Valid review (success)} &
+\bluehead{Preconditions} & User is on a product page \\ \hline
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py}{\links{(Source Code)}}\newline{\small Valid review (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -554,7 +556,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The review is submitted successfully.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py}{(Source Code)}\newline{\small Empty review (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py}{\links{(Source Code)}}\newline{\small Empty review (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -566,7 +568,7 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
   \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} A warning about empty fields is displayed.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py}{(Source Code)}\newline{\small Invalid review (edge)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py}{\links{(Source Code)}}\newline{\small Invalid review (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to product page \\ \hline
@@ -581,9 +583,9 @@ All 7 checks passed: every invalid input was rejected with its own warning, 33 c
 \results{%
   S1 & All fields valid & Review submitted successfully & ``Thank you for your review'' & Pass & \ev{t005-sc1} \\ \hline
   S2 & Empty fields & Missing field warning & ``Warning: Please select a review rating!'' & Pass & \ev{t005-sc2} \\ \hline
-  S3a & Incorrect fields & Text review field is too short warning & ``Warning: Review Text must be between 25 and 1000 characters!'' & Pass & \ev{t005-sc3} \\ \hline
+  S3 & Incorrect fields & Text review field is too short warning & ``Warning: Review Text must be between 25 and 1000 characters!'' & Pass & \ev{t005-sc3} \\ \hline
 }
-\bluehead{Test Results} & \vspace{1ex}
+\bluehead{Screenshots} & \vspace{1ex}
 \nguyenshot{t005-sc1}{S1: Valid review}\hfill\nguyenshot{t005-sc2}{S2: Empty review}\par\vspace{4pt}
 \nguyenshot{t005-sc3}{S3: Invalid review}\par\vspace{4pt}
 All 3 checks passed. It was also found out that it is possible to submit a review despite not having logged in, which can be a potential bug depending on the intention of the developer.
@@ -599,45 +601,45 @@ All 3 checks passed. It was also found out that it is possible to submit a revie
 \bluehead{Tester} & Nguyen Tran \\ \hline
 \bluehead{Purpose} & Verify searching function on website works properly. \\ \hline
 \bluehead{Preconditions} & N/A \\ \hline
-\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py}{(Source Code)}\newline{\small Valid search (success)} &
+\bluehead{Test Scenario 1} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py}{\links{(Source Code)}}\newline{\small Valid search (success)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Enter a product keyword ("imac" in test) \\ \hline
   4 & Press the ENTER key to submit the search \\ \hline
-  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results includes the product that was searched for.} \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results include the product that was searched for.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py}{(Source Code)}\newline{\small Invalid search (validation)} &
+\bluehead{Test Scenario 2} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py}{\links{(Source Code)}}\newline{\small Invalid search (validation)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Enter randomized, invalid characters \\ \hline
   4 & Press the Enter key to submit the search \\ \hline
-  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results is empty.} \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results are empty.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
-\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py}{(Source Code)}\newline{\small Empty search (edge)} &
+\bluehead{Test Scenario 3} \href{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py}{\links{(Source Code)}}\newline{\small Empty search (edge)} &
 \vspace{1ex}
 \begin{steps}
   1 & Navigate to home page \\ \hline
   2 & Click on the search bar input field on the top navigation menu \\ \hline
   3 & Leave search bar input field empty \\ \hline
   4 & Press the ENTER key to submit the search \\ \hline
-  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results is empty.} \\ \hline
+  \multicolumn{2}{@{}|L{12.92cm}|@{}}{\textbf{Expected result:} The search results are empty.} \\ \hline
 \end{steps}
 \vspace{1ex} \\ \hline
 \results{%
   S1 & Search field contains valid product & Product appears in search result & Product appears correctly & Pass & \ev{t006-sc1} \\ \hline
-  S2 & Search field contains random/invalid characters & No products show up in search & No products show up & Pass & \ev{t006-sc2} \\ \hline
-  S3 & Search field is empty & No products show up in search & No products show up & Pass & \ev{t006-sc3} \\ \hline
+  S2 & Search field contains random/invalid characters & No products show up in search & No products show up and page says ``Your shopping cart is empty!'' (D02) & Pass & \ev{t006-sc2} \\ \hline
+  S3 & Search field is empty & No products show up in search & No products show up; same message (D02) & Pass & \ev{t006-sc3} \\ \hline
 }
-\bluehead{Test Results} & \vspace{1ex}
+\bluehead{Screenshots} & \vspace{1ex}
 \nguyenshot{t006-sc1}{S1: Valid search}\hfill\nguyenshot{t006-sc2}{S2: Invalid search}\par\vspace{4pt}
 \nguyenshot{t006-sc3}{S3: Empty search}\par\vspace{4pt}
-All 3 checks passed, no defects found.
+All 3 checks passed: matching products are listed and no products are shown for a random or empty search, but the no-results page shows ``Your shopping cart is empty!'' instead of a search message (D02).
 \vspace{1.5ex} \\ \hline
 \end{longtable}}
 
@@ -645,7 +647,7 @@ All 3 checks passed, no defects found.
 \section*{7. Analysis and Reflections}
 %====================================================================
 \subsection*{Test statistics}
-The testers executed six test cases containing 30 checks which there are 24 passed, 6 failed and 0 ended in an error. A \emph{fail} means the site behaved differently from the expected result (a possible defect), while an \emph{error} means 
+The testers executed six test cases containing 30 checks, of which 24 passed, 6 failed and 0 ended in an error. A \emph{fail} means the site behaved differently from the expected result (a possible defect), while an \emph{error} means 
 the test itself could not complete (for example, an element was not found), which is the problem with the test rather than the site.
 
 \begin{center}
@@ -670,13 +672,65 @@ the test itself could not complete (for example, an element was not found), whic
 \cellcolor{headgray}\textbf{ID} & \cellcolor{headgray}\textbf{Test} & \cellcolor{headgray}\textbf{Description} & \cellcolor{headgray}\textbf{Severity} & \cellcolor{headgray}\textbf{Steps to reproduce} & \cellcolor{headgray}\textbf{Expected} & \cellcolor{headgray}\textbf{Actual} \\ \hline
 \endhead
 D01 & T005 & A review can be submitted without logging in & Low (depends on the store's intended policy) & Log out; open a product page; click ``Write a review''; enter a name, a review of 25+ characters and a rating; click Continue & If reviews are meant for customers only, a prompt to log in or register & The review is accepted and sent for approval \\ \hline
-D02 & T003 & Empty comparison list shows the shopping-cart message & Low (wording) & Open iPod Touch; click ``Compare this Product''; open the comparison page; click Remove & A message about the comparison list, e.g.\ ``You have not chosen any products to compare.'' & Under the heading Product Comparison the page says ``Your shopping cart is empty!'' \\ \hline
+D02 & T003, T006 & Empty comparison list and empty search results show the shopping-cart message & Low (wording) & (1) Open iPod Touch; click ``Compare this Product''; open the comparison page; click Remove. (2) Search for a word with no matches, or submit an empty search & (1) ``You have not chosen any products to compare.'' (2) ``There is no product that matches the search criteria.'' & Both pages say ``Your shopping cart is empty!'' \\ \hline
 D03 & T004 & Invalid quantities get a success alert although nothing is added & Medium & Open iPod Touch; type Qty 0 (or -1, or \texttt{abc}); click Add to Cart; open the cart & The quantity is refused with a message and no success alert & ``Success: You have added iPod Touch to your shopping cart!'' appears, but the cart stays at 0 item(s) - \$0.00 \\ \hline
 D04 & T004 & Checkout can be reached with more items than in stock & Medium (may be a store setting) & Add 9999 iPod Touch (998 in stock); open the cart; click Checkout & Checkout is blocked and the user returns to the cart & The cart marks the line with *** and warns, but the Checkout page still opens (header: 9999 item(s) - \$1,219,878.00) \\ \hline
+D05 & T004 & Cart page heading reads ``Use Gift Certificate'' & Low (wording) & Add any product to the cart; open the cart page & Heading ``Shopping Cart (15.00kg)'', matching the breadcrumb & Heading ``Use Gift Certificate (15.00kg)'', while the breadcrumb says Shopping Cart \\ \hline
 \end{longtable}}
 
 \subsection*{Reflections}
-Across the six test cases the group ran 30 checks: 24 passed, 6 failed and none ended in an error, so no check was lost to a problem in the tests themselves. The 6 failed checks trace back to three behaviours of the site (D02 to D04), and Nguyen's tests found a fourth, possible defect (D01), because guests can submit a product review without logging in. The core tasks of logging in, registering, searching and adding a valid quantity to the cart all worked; the problems appeared around the edges, in the wording of an empty comparison list, in the success message shown for invalid quantities, and in the checkout being reachable when more items are in the cart than are in stock.
+Across the six test cases the group ran 30 checks: 24 passed, 6 failed and none ended in an error, so no check was lost to a problem in the tests themselves. The 6 failed checks trace back to three behaviours of the site (D02 to D04). Two more defects showed up in the evidence of checks that passed: guests can submit a product review without logging in (D01, T005), and the cart page is headed ``Use Gift Certificate'' instead of ``Shopping Cart'' (D05, T004). The no-results search page in T006 also shows the same wrong message as the empty comparison list, so D02 affects two pages. The core tasks of logging in, registering, searching and adding a valid quantity to the cart all worked; the problems appeared around the edges, in the wording of an empty comparison list, in the success message shown for invalid quantities, and in the checkout being reachable when more items are in the cart than are in stock.
 
-The most useful lesson was that invalid and boundary inputs find far more than valid ones: three of the four defects came from inputs such as a quantity of zero, -1 or \texttt{abc}, while the valid inputs passed in all six test cases. We also learned that a failing test is not automatically a defect. In Nam's first full run, 3 of 7 failures were mistakes in our own tests (a wrongly worded expected message and a check made before a request had finished), and only walking through each scenario by hand on the live site separated them from the real defects. Timing was the other recurring problem on a live site: alerts that disappear after a few seconds and requests that finish late made results vary until the tests recorded each alert as it appeared and waited for background requests to finish. Finally, the two halves of the work used different tools and levels of detail (Nguyen's Selenium scripts in Microsoft Edge, Nam's pytest suite in Chrome for Testing), which gave some cross-browser coverage but made the shared statistics harder to combine. Next time we would agree on one framework, one test-case template with an explicit expected result for every input, and one shared repository from the start, and we would explore each function by hand before writing assertions.
+The most useful lesson was that invalid and boundary inputs find far more than valid ones: three of the five defects came from inputs such as a quantity of zero, -1 or \texttt{abc}, while the valid inputs passed in all six test cases. We also learned that a failing test is not automatically a defect. In Nam's first full run, 3 of 7 failures were mistakes in our own tests (a wrongly worded expected message and a check made before a request had finished), and only walking through each scenario by hand on the live site separated them from the real defects. Timing was the other recurring problem on a live site: alerts that disappear after a few seconds and requests that finish late made results vary until the tests recorded each alert as it appeared and waited for background requests to finish. Finally, the two halves of the work used different tools and levels of detail (Nguyen's Selenium scripts in Microsoft Edge, Nam's pytest suite in Chrome for Testing), which gave some cross-browser coverage but made the shared statistics harder to combine. Next time we would agree on one framework, one test-case template with an explicit expected result for every input, and one shared repository from the start, and we would explore each function by hand before writing assertions.
+
+
+
+%====================================================================
+\clearpage
+\section*{Appendix A. Source Code}
+%====================================================================
+All test code is in one public GitHub repository, which can be opened without a GitHub account:\newline
+\url{https://github.com/nam643/Nah-I-d-win-}
+
+Every ``(Source Code)'' label in Section~6 is a clickable link to the code for that scenario. The same links are listed below so they can also be copied into a browser. For Nam's test cases, the link ends in \texttt{\#L} and a line number, which opens the file at the first line of that scenario's test function; each function's docstring and in-line comments explain what the code does.
+
+{\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|L{1.3cm}|L{1.4cm}|L{2.1cm}|L{10.6cm}|}
+\hline
+\cellcolor{headgray}\textbf{Test case} & \cellcolor{headgray}\textbf{Scenario} & \cellcolor{headgray}\textbf{Tester} & \cellcolor{headgray}\textbf{Source code link} \\ \hline
+\endhead
+T001 & S1 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario1.py} \\ \hline
+T001 & S2 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario2.py} \\ \hline
+T001 & S3 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t001/scenario3.py} \\ \hline
+T002 & S1 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L13} \\ \hline
+T002 & S2 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L33} \\ \hline
+T002 & S3 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc02_registration.py#L57} \\ \hline
+T003 & S1 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L21} \\ \hline
+T003 & S2 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L40} \\ \hline
+T003 & S3 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc03_compare.py#L71} \\ \hline
+T004 & S1 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L18} \\ \hline
+T004 & S2 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L42} \\ \hline
+T004 & S3 & Nam & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/tests/test_tc04_add_to_cart.py#L55} \\ \hline
+T005 & S1 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario1.py} \\ \hline
+T005 & S2 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario2.py} \\ \hline
+T005 & S3 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t005/scenario3.py} \\ \hline
+T006 & S1 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario1.py} \\ \hline
+T006 & S2 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario2.py} \\ \hline
+T006 & S3 & Nguyen Tran & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/tests/t006/scenario3.py} \\ \hline
+\end{longtable}}
+
+\subsection*{Shared files and evidence}
+{\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{|L{4.0cm}|>{\footnotesize\raggedright\arraybackslash}p{12.2cm}|}
+\hline
+\cellcolor{headgray}\textbf{File or folder} & \cellcolor{headgray}\normalsize\textbf{Link} \\ \hline
+\endhead
+\texttt{helpers.py} (Nam: shared actions, waits, screenshots) & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/helpers.py} \\ \hline
+\texttt{conftest.py} (Nam: opens and closes Chrome for each test) & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/conftest.py} \\ \hline
+\texttt{requirements.txt} (Nam) & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nam-testing/requirements.txt} \\ \hline
+\texttt{requirements.txt} (Nguyen) & \url{https://github.com/nam643/Nah-I-d-win-/blob/main/nguyen-testing/requirements.txt} \\ \hline
+Nam's screenshots (T002--T004) & \url{https://github.com/nam643/Nah-I-d-win-/tree/main/nam-testing/evidence} \\ \hline
+Nguyen's screenshots (T001, T005, T006) & \url{https://github.com/nam643/Nah-I-d-win-/tree/main/nguyen-testing/test-results} \\ \hline
+\end{longtable}}
 \end{document}
+
