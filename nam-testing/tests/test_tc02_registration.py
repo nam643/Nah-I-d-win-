@@ -1,6 +1,5 @@
 """
 T002 - F2 User Registration
-Tester: Nam
 Techniques: input partitioning (S2) and boundary value analysis on First Name 1-32 and Password 4-20 (S3).
 Evidence: evidence/TC02_*.png
 """

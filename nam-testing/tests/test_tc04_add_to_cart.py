@@ -1,6 +1,5 @@
 """
 T004 - F4 Adding a Product to Shopping Cart
-Tester: Nam
 Product: iPod Touch (product_id=32), $122.00 incl. tax, 998 in stock when the tests were written.
 Each test gets a new browser, so the cart starts empty.
 Totals are compared with Decimal (exact), never floats.

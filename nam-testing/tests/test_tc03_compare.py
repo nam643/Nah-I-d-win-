@@ -1,6 +1,5 @@
 """
 T003 - F3 Comparing Products
-Tester: Nam
 Products (product_id): iPod Touch 32, iPod Nano 36, iPod Shuffle 34, iPod Classic 48, iPhone 40.
 Each test gets a new browser, so the comparison list starts empty.
 Evidence: evidence/TC03_*.png

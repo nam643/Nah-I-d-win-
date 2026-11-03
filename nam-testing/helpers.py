@@ -1,16 +1,5 @@
 """
 Shared helpers for the Assignment 3 system tests.
-
-Website under test: "Your Store" (OpenCart 3.0, default theme and demo catalogue)
-https://opencart.abstracta.us/
-
-Every test file imports from here so that locators, waits and screenshots are
-written once and behave the same for every team member.
-
-Locators and messages were taken from the OpenCart 3.0 default theme and its
-English language files. If the live site ever differs, open the page in Chrome
-DevTools (F12 -> Elements, Ctrl+F), fix the selector HERE only, and every test
-picks up the fix.
 """
 
 import os
