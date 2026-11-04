@@ -8,9 +8,8 @@ import pytest
 
 import helpers
 
-
+# S1 (Registration): all fields valid -> 'Your Account Has Been Created!'.
 def test_tc02_s1_valid_registration(driver):
-    """S1 (success): all fields valid -> 'Your Account Has Been Created!'."""
     helpers.register(driver, helpers.unique_email())
     try:
         helpers.wait_route(driver, "account/success")
@@ -25,7 +24,7 @@ def test_tc02_s1_valid_registration(driver):
     [
         ("a", {"duplicate": True}, helpers.MSG_ALREADY_REGISTERED),     # e-mail already registered
         ("b", {"agree": False}, helpers.MSG_PRIVACY),                   # Privacy Policy not ticked
-        ("c", {"confirm": "Test@9999"}, helpers.MSG_CONFIRM_MISMATCH),  # confirm differs from password
+        ("c", {"confirm": "Test@9999"}, helpers.MSG_CONFIRM_MISMATCH),  # Confirmation and password do not match
     ],
     ids=["S2a-duplicate-email", "S2b-policy-not-ticked", "S2c-confirm-mismatch"],
 )
